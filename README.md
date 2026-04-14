@@ -43,21 +43,22 @@ A full-stack web application that allows users to create, manage, and participat
 ```bash
 git clone https://github.com/your-username/EMS.git
 cd EMS
-
+```
 ### 2️⃣ Backend Setup (Spring Boot)
 Configure application.properties
 add your database credentials
 - spring.datasource.url=your_db_url
 - spring.datasource.username=your_username
 - spring.datasource.password=your_password
-```bash
+``` bash
 cd EMS_backend
 mvn spring-boot:run
+```
 
 ### 3️⃣ Frontend Setup (React)
+```bash
 cd EMS_frontend
 npm install
 npm start
+```
 
-
-## 📂 Project Structure
