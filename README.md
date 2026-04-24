@@ -42,7 +42,7 @@ A full-stack web application that allows users to create, manage, and participat
 
 ### 1️⃣ Clone the repository
 ```bash
-git clone https://github.com/your-username/EMS.git
+git clone https://github.com/aniketShukla1605/EMS.git
 cd EMS
 ```
 ### 2️⃣ Backend Setup (Spring Boot)
