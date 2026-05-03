@@ -1,10 +1,12 @@
 package com.main.EMS_backend.controller;
 
+import com.main.EMS_backend.dto.EventUpdateRequest;
 import com.main.EMS_backend.entity.Event;
 import com.main.EMS_backend.entity.User;
 import com.main.EMS_backend.repository.UserRepository;
 import com.main.EMS_backend.service.EventRegistrationService;
 import com.main.EMS_backend.service.EventService;
+import com.main.EMS_backend.service.RecommendationService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -19,6 +21,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/events")
@@ -30,6 +33,10 @@ public class EventController {
     private UserRepository userRepository;
     @Autowired
     private EventRegistrationService eventRegistrationService;
+    @Autowired
+    private RecommendationService recommendationService;
+
+//    private RecommendationService  recommendationService;
 
     public EventController(EventService eventService) {
         this.eventService = eventService;
@@ -82,17 +89,24 @@ public class EventController {
     public ResponseEntity<?> getAllEvents() {
         return ResponseEntity.ok(eventService.getAllEvents());
     }
+    
+    @GetMapping("/recommended-events")
+    public List<Event> getRecommendations(Authentication authentication) {
+        String email = authentication.getName();
+        User user = userRepository.findByEmail(email);
 
-    @PutMapping("/update/{id}")
-    public ResponseEntity<?> updateEvent(@PathVariable Long id,
-                                         @RequestParam String eventName,
-                                         @RequestParam String category,
-                                         @RequestParam String date,
-                                         @RequestParam String time,
-                                         @RequestParam String venue,
-                                         @RequestParam String description,
-                                         @RequestParam(required = false) MultipartFile banner) throws IOException {
-        return ResponseEntity.ok(eventService.updateEvent(id,eventName,category,date,time,venue,description,banner));
+        return recommendationService.recommendations(user.getId());
+    }
+
+    @PutMapping(value = "/update/{id}", consumes = "multipart/form-data")
+    public ResponseEntity<?> updateEvent(
+            @PathVariable Long id,
+            @ModelAttribute EventUpdateRequest request
+    ) throws IOException {
+
+        return ResponseEntity.ok(
+                eventService.updateEvent(id, request)
+        );
     }
 
     @GetMapping("/{id}")

@@ -1,5 +1,6 @@
 package com.main.EMS_backend.service;
 
+import com.main.EMS_backend.dto.EventUpdateRequest;
 import com.main.EMS_backend.dto.OrganiserEventDTO;
 import com.main.EMS_backend.entity.Event;
 import com.main.EMS_backend.entity.User;
@@ -54,7 +55,6 @@ public class EventService {
                     .findByDateAfterAndEventNameContainingIgnoreCase(today, search);
         }
         else{
-
             return eventRepository.findByDateAfter(today);
         }
     }
@@ -74,21 +74,29 @@ public class EventService {
         eventRepository.deleteById(id);
     }
 
-    public @Nullable Object updateEvent(Long id, String eventName, String category, String date, String time, String venue, String description, MultipartFile banner) throws IOException {
+    public Object updateEvent(Long id, EventUpdateRequest req) throws IOException {
+
         Event event = eventRepository.findById(id).orElseThrow(() -> new EventNotFoundException("Event not found"));
-        event.setEventName(eventName);
-        event.setCategory(category);
-        event.setDate(LocalDate.parse(date));
-        event.setTime(LocalTime.parse(time));
-        event.setVenue(venue);
-        event.setDescription(description);
+
+
+        MultipartFile banner = req.getBanner();
+
         if (banner != null && !banner.isEmpty()) {
+            // handle file
             String fileName = banner.getOriginalFilename();
             Path path = Paths.get("uploads/"+fileName);
             Files.write(path,banner.getBytes());
             event.setBannerPath(fileName);
         }
+        event.setEventName(req.getEventName());
+        event.setCategory(req.getCategory());
+        event.setDate(LocalDate.parse(req.getDate()));
+        event.setTime(LocalTime.parse(req.getTime()));
+        event.setVenue(req.getVenue());
+        event.setDescription(req.getDescription());
+
         eventRepository.save(event);
-        return "Event updated successfully";
+
+        return "Updated successfully";
     }
 }
