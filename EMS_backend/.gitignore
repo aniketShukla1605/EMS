@@ -36,5 +36,5 @@ build/
 .env
 uploads
 
-application.properties
-application-test.properties
+src/main/resources/application.properties
+src/main/resources/application-test.properties
