@@ -180,7 +180,7 @@ export default function OrganiserProfile() {
               <input
                 type="text"
                 disabled
-                value="Student"
+                value="Organiser"
                 className="w-full mt-1.5 p-3 rounded-md bg-white/10 border-none text-white opacity-70 outline-none"
               />
             </div>
