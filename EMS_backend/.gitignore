@@ -37,3 +37,4 @@ build/
 uploads
 
 application.properties
+application-test.properties
