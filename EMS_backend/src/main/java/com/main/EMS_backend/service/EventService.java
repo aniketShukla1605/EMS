@@ -9,6 +9,8 @@ import com.main.EMS_backend.repository.EventRegistrationRepository;
 import com.main.EMS_backend.repository.EventRepository;
 import com.main.EMS_backend.repository.UserRepository;
 import org.jspecify.annotations.Nullable;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -31,13 +33,23 @@ public class EventService {
         this.userRepository = userRepository;
         this.eventRegistrationRepository = eventRegistrationRepository;
     }
+    @CacheEvict(value = {
+            "allEvents",
+            "filteredEvents"
+    }, allEntries = true)
     public Event createEvent(Event event){
         return eventRepository.save(event);
     }
+    @Cacheable(value = "allEvents")
     public List<Event> getAllEvents() { return eventRepository.findAll(); }
+    @Cacheable(value = "eventById", key = "#id")
     public Event findById(Long id) { return eventRepository.findById(id)
                 .orElseThrow(() -> new EventNotFoundException("Event not found")); }
 
+    @Cacheable(
+            value = "filteredEvents",
+            key = "#category + '-' + #search"
+    )
     public List<Event> getFilteredEvents(String category, String search) {
         LocalDate today = LocalDate.now();
 
@@ -70,10 +82,20 @@ public class EventService {
         return events.stream().map(event -> new OrganiserEventDTO(event,eventRegistrationRepository.countByEventId(event.getId()))).toList();
     }
 
+    @CacheEvict(value = {
+            "allEvents",
+            "eventById",
+            "filteredEvents"
+    }, allEntries = true)
     public void deleteEvent(Long id) {
         eventRepository.deleteById(id);
     }
 
+    @CacheEvict(value = {
+            "allEvents",
+            "eventById",
+            "filteredEvents"
+    }, allEntries = true)
     public Object updateEvent(Long id, EventUpdateRequest req) throws IOException {
 
         Event event = eventRepository.findById(id).orElseThrow(() -> new EventNotFoundException("Event not found"));

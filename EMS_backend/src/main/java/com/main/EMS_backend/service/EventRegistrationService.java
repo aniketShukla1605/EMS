@@ -9,6 +9,8 @@ import com.main.EMS_backend.repository.EventRegistrationRepository;
 import com.main.EMS_backend.repository.EventRepository;
 import com.main.EMS_backend.repository.UserRepository;
 import org.jspecify.annotations.Nullable;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -26,6 +28,13 @@ public class EventRegistrationService {
         this.eventRepository = eventRepository;
     }
 
+    @CacheEvict(value = {
+            "userRegistrations",
+            "eventRegistrations",
+            "organiserRegistrations",
+            "pendingApprovals",
+            "recommendations"
+    }, allEntries = true)
     public String registerUser(String email,Long eventId){
         User user = userRepository.findByEmail(email);
         Event event = eventRepository.findById(eventId).orElseThrow(()->new EventNotFoundException("Event not found"));
@@ -45,12 +54,21 @@ public class EventRegistrationService {
         eventRegistrationRepository.save(eventRegistration);
         return "Event registered successfully";
     }
+
+    @Cacheable(value = "userRegistrations", key = "#email")
     public List<EventRegistration> getUserRegistrations(String email){
         User user = userRepository.findByEmail(email);
         return eventRegistrationRepository.findByUserId(user.getId());
     }
 
 
+    @CacheEvict(value = {
+            "userRegistrations",
+            "eventRegistrations",
+            "organiserRegistrations",
+            "pendingApprovals",
+            "recommendations"
+    }, allEntries = true)
     public String cancelRegistration(String email, Long eventId) {
         User user = userRepository.findByEmail(email);
         EventRegistration registration = eventRegistrationRepository.findByUserIdAndEventId(user.getId(),eventId).orElseThrow(()->new RuntimeException("Event not found"));
@@ -62,10 +80,18 @@ public class EventRegistrationService {
         return "Event cancelled successfully";
     }
 
+    @Cacheable(value = "eventRegistrations", key = "#eventId")
     public List<EventRegistration> getRegistrationsForEvent(Long eventId){
         return eventRegistrationRepository.findByEventId(eventId);
     }
 
+    @CacheEvict(value = {
+            "userRegistrations",
+            "eventRegistrations",
+            "organiserRegistrations",
+            "pendingApprovals",
+            "recommendations"
+    }, allEntries = true)
     public String updateStatus(Long registrationId, String status){
         EventRegistration registration = eventRegistrationRepository.findById(registrationId).orElseThrow(()->new EventNotFoundException("Event not found"));
         registration.setStatus(status);
@@ -73,9 +99,12 @@ public class EventRegistrationService {
         return "Status updated successfully "+ status;
     }
 
+    @Cacheable(value = "organiserRegistrations", key = "#email")
     public List<EventRegistration> getRegistrationsByOrganiser(String email) {
         return eventRegistrationRepository.findByOrganizerEmail(email);
     }
+
+    @Cacheable(value = "pendingApprovals", key = "#email")
     public long getPendingApprovalsCount(String email) {
         return eventRegistrationRepository.countByEvent_CreatedBy_EmailAndStatus(email, "PENDING");
     }

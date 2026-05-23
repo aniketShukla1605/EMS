@@ -1,0 +1,53 @@
+version: '3.9'
+
+services:
+
+  frontend:
+    build: ./Frontend/CollegeEvent-Hub
+    ports:
+      - "3000:5173"
+    depends_on:
+      - backend
+
+  backend:
+    build: ./EMS_backend
+    ports:
+      - "8080:8080"
+    depends_on:
+      - mysql
+      - redis
+
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:mysql://mysql:3306/quizdb
+      SPRING_DATASOURCE_USERNAME: root
+      SPRING_DATASOURCE_PASSWORD: password
+
+      SPRING_REDIS_HOST: redis
+      SPRING_REDIS_PORT: 6379
+
+  mysql:
+    image: mysql:8
+    restart: always
+
+    environment:
+      MYSQL_ROOT_PASSWORD: password
+      MYSQL_DATABASE: quizdb
+
+    ports:
+      - "3307:3306"
+
+    volumes:
+      - mysql-data:/var/lib/mysql
+
+  redis:
+    image: redis:7-alpine
+
+    ports:
+      - "6379:6379"
+
+    volumes:
+      - redis-data:/data
+
+volumes:
+  mysql-data:
+  redis-data:

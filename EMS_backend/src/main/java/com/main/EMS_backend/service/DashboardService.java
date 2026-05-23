@@ -4,6 +4,7 @@ import com.main.EMS_backend.repository.EventRepository;
 import com.main.EMS_backend.repository.OrganiserRequestRepository;
 import com.main.EMS_backend.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
 import java.util.HashMap;
@@ -18,6 +19,7 @@ public class DashboardService {
     @Autowired
     private EventRepository eventRepository;
 
+    @Cacheable("dashboardStats")
     public Map<String, Long> getStats() {
         Map<String, Long> map = new HashMap<String, Long>();
         map.put("students", userRepository.countByRole("USER"));

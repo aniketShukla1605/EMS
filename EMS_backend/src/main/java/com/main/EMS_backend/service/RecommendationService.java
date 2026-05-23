@@ -5,6 +5,7 @@ import com.main.EMS_backend.entity.EventRegistration;
 import com.main.EMS_backend.repository.EventRegistrationRepository;
 import com.main.EMS_backend.repository.EventRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -20,6 +21,7 @@ public class RecommendationService {
     @Autowired
     private EventRegistrationRepository registrationRepository;
 
+    @Cacheable(value = "recommendations", key = "#userId")
     public List<Event> recommendations(long userId) {
         List<EventRegistration> registrations = registrationRepository.findByUserId(userId);
         Map<String,Integer> categories = new HashMap<>();
