@@ -10,38 +10,27 @@ export default function Register() {
   const [emailVerified, setEmailVerified] = useState(false);
 
   const [formData, setFormData] = useState({
-    username: '', // Make sure this matches your Spring Boot User entity exactly
+    username: '',
     email: '',
     instituteID: '',
     branch: '',
     contact: '',
     Address: '',
     password: '',
-    // role: 'ROLE_USER' // Default to student
   });
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
-  // Send OTP
   const sendOtp = async () => {
     try {
-      const response = await fetch(
-        `http://localhost:8080/otp/send`,
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json"
-          },
-          body: JSON.stringify({
-            email: formData.email
-          })
-        }
-      );
-
+      const response = await fetch(`http://localhost:8080/otp/send`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email: formData.email })
+      });
       const text = await response.text();
-
       if (response.ok) {
         alert(text);
         setOtpSent(true);
@@ -53,25 +42,14 @@ export default function Register() {
     }
   };
 
-  // Verify OTP
   const verifyOtp = async () => {
     try {
-      const response = await fetch(
-        `http://localhost:8080/otp/verify?email=${formData.email}`,
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json"
-          },
-          body: JSON.stringify({
-            email: formData.email,
-            otp: otp
-          })
-        }
-      );
-
+      const response = await fetch(`http://localhost:8080/otp/verify?email=${formData.email}`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email: formData.email, otp: otp })
+      });
       const text = await response.text();
-
       if (response.ok) {
         alert(text);
         setEmailVerified(true);
@@ -86,7 +64,6 @@ export default function Register() {
   const handleRegister = async (e) => {
     e.preventDefault();
     try {
-      // Hit your Spring Boot /api/auth/register endpoint
       await api.post('/auth/register', formData);
       alert("Registration successful! You can now log in.");
       navigate('/login');
@@ -102,74 +79,128 @@ export default function Register() {
         <h2 className="text-center text-brand text-2xl mb-5 font-semibold">Create Your Account</h2>
 
         <form onSubmit={handleRegister} className="flex flex-col">
+
           <label className="mt-2 font-medium text-[#aee6e6]">Full Name</label>
-          <input type="text" name="name" value={formData.name} onChange={handleChange} placeholder="Enter your full name" required className="w-full p-3 mt-2 rounded-md bg-white/15 text-white outline-none placeholder-[#cfd9e2]" />
+          <input
+            type="text"
+            name="username"
+            value={formData.username}
+            onChange={handleChange}
+            placeholder="Enter your full name"
+            required
+            className="w-full p-3 mt-2 rounded-md bg-white/15 text-white outline-none placeholder-[#cfd9e2]"
+          />
 
           <label className="mt-3 font-medium text-[#aee6e6]">Email</label>
-          <div className='email-row'>
-            <input type="email" name="email" value={formData.email} onChange={handleChange} placeholder="Enter your email" required className="w-full p-3 mt-2 rounded-md bg-white/15 text-white outline-none placeholder-[#cfd9e2]" />
+          <div className="flex gap-2 items-center mt-2">
+            <input
+              type="email"
+              name="email"
+              value={formData.email}
+              onChange={handleChange}
+              placeholder="Enter your email"
+              required
+              className="flex-1 p-3 rounded-md bg-white/15 text-white outline-none placeholder-[#cfd9e2]"
+            />
             <button
               type="button"
-              className="otp-btn"
               onClick={sendOtp}
               disabled={!formData.email}
+              className="shrink-0 px-4 py-3 bg-brand text-darkBg rounded-md font-semibold text-sm hover:bg-brandHover transition disabled:opacity-50 disabled:cursor-not-allowed"
             >
               Send OTP
             </button>
           </div>
           {otpSent && !emailVerified && (
-            <div className="otp-section">
-
+            <div className="flex gap-2 items-center mt-3">
               <input
                 type="text"
                 placeholder="Enter OTP"
                 value={otp}
                 onChange={(e) => setOtp(e.target.value)}
+                className="flex-1 p-3 rounded-md bg-white/15 text-white outline-none placeholder-[#cfd9e2]"
               />
-
               <button
                 type="button"
-                className="verify-btn"
                 onClick={verifyOtp}
+                className="shrink-0 px-4 py-3 bg-white/20 text-white rounded-md font-semibold text-sm hover:bg-white/30 transition"
               >
                 Verify
               </button>
-
             </div>
           )}
 
           {emailVerified && (
-            <p className="verified-text">Email Verified ✓</p>
+            <p className="mt-2 text-sm font-semibold text-green-400">
+              ✓ Email Verified
+            </p>
           )}
 
           <label className="mt-3 font-medium text-[#aee6e6]">Institute ID</label>
-          <input type="text" name="instituteId" value={formData.instituteID} onChange={handleChange} placeholder="Enter your ID" required className="w-full p-3 mt-2 rounded-md bg-white/15 text-white outline-none placeholder-[#cfd9e2]" />
+          <input
+            type="text"
+            name="instituteID"
+            value={formData.instituteID}
+            onChange={handleChange}
+            placeholder="Enter your ID"
+            required
+            className="w-full p-3 mt-2 rounded-md bg-white/15 text-white outline-none placeholder-[#cfd9e2]"
+          />
 
           <label className="mt-3 font-medium text-[#aee6e6]">Branch</label>
-          <input type="text" name="branch" value={formData.branch} onChange={handleChange} placeholder="Enter your branch" required className="w-full p-3 mt-2 rounded-md bg-white/15 text-white outline-none placeholder-[#cfd9e2]" />
+          <input
+            type="text"
+            name="branch"
+            value={formData.branch}
+            onChange={handleChange}
+            placeholder="Enter your branch"
+            required
+            className="w-full p-3 mt-2 rounded-md bg-white/15 text-white outline-none placeholder-[#cfd9e2]"
+          />
 
           <label className="mt-3 font-medium text-[#aee6e6]">Contact Number</label>
-          <input type="tel" name="contact" value={formData.contact} onChange={handleChange} placeholder="Enter contact number" required className="w-full p-3 mt-2 rounded-md bg-white/15 text-white outline-none placeholder-[#cfd9e2]" />
+          <input
+            type="tel"
+            name="contact"
+            value={formData.contact}
+            onChange={handleChange}
+            placeholder="Enter contact number"
+            required
+            className="w-full p-3 mt-2 rounded-md bg-white/15 text-white outline-none placeholder-[#cfd9e2]"
+          />
 
           <label className="mt-3 font-medium text-[#aee6e6]">Address</label>
-          <textarea name="address" value={formData.Address} onChange={handleChange} placeholder="Enter your address" required className="w-full p-3 mt-2 rounded-md bg-white/15 text-white outline-none placeholder-[#cfd9e2] h-17.5 resize-none"></textarea>
+          <textarea
+            name="Address"
+            value={formData.Address}
+            onChange={handleChange}
+            placeholder="Enter your address"
+            required
+            className="w-full p-3 mt-2 rounded-md bg-white/15 text-white outline-none placeholder-[#cfd9e2] h-[70px] resize-none"
+          />
 
           <label className="mt-3 font-medium text-[#aee6e6]">Password</label>
-          <input type="password" name="password" value={formData.password} onChange={handleChange} placeholder="Choose a password" required className="w-full p-3 mt-2 rounded-md bg-white/15 text-white outline-none placeholder-[#cfd9e2]" />
+          <input
+            type="password"
+            name="password"
+            value={formData.password}
+            onChange={handleChange}
+            placeholder="Choose a password"
+            required
+            className="w-full p-3 mt-2 rounded-md bg-white/15 text-white outline-none placeholder-[#cfd9e2]"
+          />
 
-          {/* <label className="mt-3 font-medium text-[#aee6e6]">Select Role</label>
-          <select name="role" value={formData.role} onChange={handleChange} className="w-full p-3 mt-2 rounded-md bg-white/15 text-white outline-none [&>option]:bg-[#536769]">
-            <option value="ROLE_USER">Student</option>
-            <option value="ROLE_ORGANISER">Organizer</option>
-          </select> */}
-
-          <button type="submit" className="w-full mt-5 p-3 bg-brand text-darkBg rounded-md font-semibold cursor-pointer hover:bg-brandHover transition">
+          <button
+            type="submit"
+            className="w-full mt-5 p-3 bg-brand text-darkBg rounded-md font-semibold cursor-pointer hover:bg-brandHover transition"
+          >
             Register
           </button>
         </form>
 
         <p className="text-center mt-4">
-          Already have an account? <Link to="/login" className="text-brand no-underline hover:underline">Login</Link>
+          Already have an account?{' '}
+          <Link to="/login" className="text-brand no-underline hover:underline">Login</Link>
         </p>
       </div>
     </div>
