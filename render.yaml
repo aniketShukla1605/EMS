@@ -3,7 +3,7 @@ services:
     name: ems-backend
     runtime: docker
     rootDir: EMS_backend
-    plan: free
+    plan: starter
     envVars:
       - key: SPRING_DATASOURCE_URL
         sync: false
@@ -30,7 +30,7 @@ services:
     name: ems-frontend
     runtime: static
     rootDir: Frontend/CollegeEvent-Hub
-    plan: free
+    plan: starter
     buildCommand: npm ci && npm run build
     staticPublishPath: dist
     routes:
