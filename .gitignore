@@ -36,5 +36,5 @@ build/
 .env
 uploads
 
-EMS_backend/src/main/resources/application.properties
-EMS_backend/src/main/resources/application-test.properties
+#EMS_backend/src/main/resources/application.properties
+#EMS_backend/src/main/resources/application-test.properties
