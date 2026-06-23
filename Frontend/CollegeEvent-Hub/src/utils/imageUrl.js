@@ -1,3 +1,5 @@
+import { apiOrigin } from '../api/axiosConfig';
+
 export function resolveImageUrl(path) {
   if (!path) {
     return null;
@@ -7,5 +9,5 @@ export function resolveImageUrl(path) {
     return path;
   }
 
-  return `http://localhost:8080${path}`;
+  return `${apiOrigin}${path.startsWith('/') ? path : `/${path}`}`;
 }

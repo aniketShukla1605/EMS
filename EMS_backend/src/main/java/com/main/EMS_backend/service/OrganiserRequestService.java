@@ -45,9 +45,6 @@ public class OrganiserRequestService {
         OrganiserRequest request = organiserRequestRepository.findById(id).orElseThrow(()-> new UserNotFoundException("User not found"));
 
         User user = request.getUser();
-        if(organiserRequestRepository.existsByUserAndStatus(user,"PENDING")){
-            return "Request already pending";
-        }
         user.setRole("ORGANISER");
         userRepository.save(user);
         request.setStatus("APPROVED");

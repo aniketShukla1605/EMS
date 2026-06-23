@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import api from '../api/axiosConfig';
+import { resolveImageUrl } from '../utils/imageUrl';
 
 export default function StudentProfile() {
 
@@ -101,7 +102,7 @@ export default function StudentProfile() {
           <img
             src={
               profilePicture
-                ? `http://localhost:8080${profilePicture}`
+                ? resolveImageUrl(profilePicture)
                 : "https://i.pravatar.cc/50"
             }
             alt="Profile"
@@ -119,7 +120,7 @@ export default function StudentProfile() {
             <img
               src={
                 profilePicture
-                  ? `http://localhost:8080${profilePicture}`
+                  ? resolveImageUrl(profilePicture)
                   : "https://i.pravatar.cc/120"
               }
               alt="Profile"
@@ -180,6 +181,9 @@ export default function StudentProfile() {
                   type={field.type}
                   value={profile?.[field.id] || ""}
                   disabled={!isEditing}
+                  onChange={(e) =>
+                    setProfile({ ...profile, [field.id]: e.target.value })
+                  }
                   className="w-full mt-1.5 p-3 rounded-md bg-white/10 border-none text-white disabled:opacity-70 outline-none"
                 />
               </div>
@@ -190,6 +194,9 @@ export default function StudentProfile() {
               <textarea
                 disabled={!isEditing}
                 value={profile?.address || ""}
+                onChange={(e) =>
+                  setProfile({ ...profile, address: e.target.value })
+                }
                 className="w-full mt-1.5 p-3 rounded-md bg-white/10 border-none text-white disabled:opacity-70 outline-none h-22.5 resize-none"
               />
             </div>

@@ -33,7 +33,7 @@ public class RecommendationService {
                     categories.getOrDefault(category, 0)+1
             );
         }
-        List<Event> upcomingEvents = eventRepository.findByDateAfter(LocalDate.now());
+        List<Event> upcomingEvents = eventRepository.findByDateGreaterThanEqual(LocalDate.now());
 
         upcomingEvents.sort((e1,e2) -> {
             int score1 = categories.getOrDefault(e1.getCategory(), 0);

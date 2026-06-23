@@ -1,5 +1,6 @@
 package com.main.EMS_backend.controller;
 
+import com.main.EMS_backend.dto.UserSummaryResponse;
 import com.main.EMS_backend.service.DashboardService;
 import com.main.EMS_backend.service.UserService;
 import lombok.extern.slf4j.Slf4j;
@@ -7,16 +8,21 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("/api/admin/users")
-@CrossOrigin("http://localhost:5173")
 @Slf4j
 public class AdminUserController {
     @Autowired
     private UserService userService;
     @GetMapping("/{role}")
-    public ResponseEntity<?> getUsers(@PathVariable String role) {
-        return ResponseEntity.ok(userService.getUsersByRole(role));
+    public ResponseEntity<List<UserSummaryResponse>> getUsers(@PathVariable String role) {
+        List<UserSummaryResponse> users = userService.getUsersByRole(role)
+                .stream()
+                .map(UserSummaryResponse::from)
+                .toList();
+        return ResponseEntity.ok(users);
     }
     @DeleteMapping("/{id}")
     public ResponseEntity<?> deleteUser(@PathVariable Long id) {

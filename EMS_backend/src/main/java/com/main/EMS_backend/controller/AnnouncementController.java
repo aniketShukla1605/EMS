@@ -10,7 +10,6 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/announcements")
-@CrossOrigin("http://localhost:5173")
 @Slf4j
 public class AnnouncementController {
     @Autowired

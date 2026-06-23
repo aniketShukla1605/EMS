@@ -1,6 +1,7 @@
 import { Link, useNavigate } from 'react-router-dom';
 import { useEffect, useState } from 'react';
 import api from '../api/axiosConfig';
+import { resolveImageUrl } from '../utils/imageUrl';
 
 export default function OrganiserDashboard() {
   const navigate = useNavigate();
@@ -169,7 +170,7 @@ export default function OrganiserDashboard() {
             <img
               src={
                 profilePicture
-                  ? `http://localhost:8080${profilePicture}`
+                  ? resolveImageUrl(profilePicture)
                   : 'https://cdn-icons-png.flaticon.com/512/149/149071.png'
               }
               alt="profile"

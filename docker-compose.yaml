@@ -5,7 +5,7 @@ services:
   frontend:
     build: ./Frontend/CollegeEvent-Hub
     ports:
-      - "3000:5173"
+      - "3000:80"
     depends_on:
       - backend
 
@@ -13,17 +13,26 @@ services:
     build: ./EMS_backend
     ports:
       - "8080:8080"
+    restart: unless-stopped
+    env_file:
+      - ./EMS_backend/.env
     depends_on:
-      - mysql
-      - redis
+      mysql:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
 
     environment:
-      SPRING_DATASOURCE_URL: jdbc:mysql://mysql:3306/quizdb
+      SPRING_DATASOURCE_URL: jdbc:mysql://mysql:3306/EMS?createDatabaseIfNotExist=true&allowPublicKeyRetrieval=true&useSSL=false
       SPRING_DATASOURCE_USERNAME: root
       SPRING_DATASOURCE_PASSWORD: password
 
-      SPRING_REDIS_HOST: redis
-      SPRING_REDIS_PORT: 6379
+      SPRING_DATA_REDIS_HOST: redis
+      SPRING_DATA_REDIS_PORT: 6379
+      SPRING_CACHE_TYPE: simple
+      APP_CORS_ALLOWED_ORIGINS: http://localhost:5173,http://localhost:3000
+    volumes:
+      - ./EMS_backend/uploads:/app/uploads
 
   mysql:
     image: mysql:8
@@ -31,22 +40,33 @@ services:
 
     environment:
       MYSQL_ROOT_PASSWORD: password
-      MYSQL_DATABASE: quizdb
 
     ports:
       - "3307:3306"
 
     volumes:
       - mysql-data:/var/lib/mysql
+      - ./docker/mysql/init:/docker-entrypoint-initdb.d:ro
+    healthcheck:
+      test: [ "CMD-SHELL", "mysqladmin ping -h localhost -uroot -ppassword" ]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+      start_period: 30s
 
   redis:
     image: redis:7-alpine
 
+    restart: unless-stopped
+
     ports:
       - "6379:6379"
 
-    volumes:
-      - redis-data:/data
+    healthcheck:
+      test: [ "CMD", "redis-cli", "ping" ]
+      interval: 10s
+      timeout: 5s
+      retries: 10
 
 volumes:
   mysql-data:

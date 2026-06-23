@@ -25,7 +25,6 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/events")
-@CrossOrigin(origins = "http://localhost:5173")
 @Slf4j
 public class EventController {
     private EventService eventService;
@@ -54,6 +53,24 @@ public class EventController {
             Authentication authentication
     ) throws IOException {
 
+        if (authentication == null || authentication.getName() == null) {
+            return ResponseEntity.status(401).body("Authentication is required");
+        }
+
+        if (banner == null || banner.isEmpty()) {
+            return ResponseEntity.badRequest().body("Event banner is required");
+        }
+
+        if (banner.getContentType() == null || !banner.getContentType().startsWith("image/")) {
+            return ResponseEntity.badRequest().body("Upload image only");
+        }
+
+        String email = authentication.getName();
+        User user = userRepository.findByEmail(email);
+        if (user == null) {
+            return ResponseEntity.status(404).body("User not found");
+        }
+
         String uploadDir = "uploads/";
         File folder = new File(uploadDir);
         if (!folder.exists()) {
@@ -63,9 +80,6 @@ public class EventController {
         String fileName = System.currentTimeMillis() + "_" + banner.getOriginalFilename();
         Path filePath = Paths.get(uploadDir + fileName);
         Files.write(filePath, banner.getBytes());
-
-        String email = authentication.getName();
-        User user = userRepository.findByEmail(email);
 
         Event event = new Event();
         event.setEventName(eventName);
@@ -77,10 +91,6 @@ public class EventController {
         event.setBannerPath("/uploads/"+fileName);
 //        event.setCreatedBy(authentication.getName());
         event.setCreatedBy(user);
-
-        if (!banner.getContentType().startsWith("image/")) {
-            return ResponseEntity.badRequest().body("Upload image only");
-        }
 
         return ResponseEntity.ok(eventService.createEvent(event));
     }

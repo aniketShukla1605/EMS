@@ -28,7 +28,6 @@ public class UserService {
         user.setPassword(passwordEncoder.encode(user.getPassword()));
         userRepository.save(user);
     }
-    @Cacheable(value = "usersByRole", key = "#role")
     public List<User> getUsersByRole(String role) {
         return userRepository.findByRole(role);
     }

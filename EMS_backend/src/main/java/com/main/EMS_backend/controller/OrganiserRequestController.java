@@ -11,7 +11,6 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/organiser-requests")
-@CrossOrigin("http://localhost:5173")
 @Slf4j
 public class OrganiserRequestController {
     @Autowired

@@ -2,18 +2,27 @@ package com.main.EMS_backend.service;
 
 import jakarta.mail.MessagingException;
 import jakarta.mail.internet.MimeMessage;
-import org.springframework.mail.SimpleMailMessage;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Service;
 
 @Service
 public class EmailOtpService {
-    private JavaMailSender mailSender;
-    public EmailOtpService(JavaMailSender mailSender) {
+    private final JavaMailSender mailSender;
+    private final String fromAddress;
+
+    public EmailOtpService(JavaMailSender mailSender,
+                           @Value("${spring.mail.username}") String fromAddress) {
         this.mailSender = mailSender;
+        this.fromAddress = fromAddress;
     }
+
     public void sendOtp(String email, String otp) throws MessagingException {
+        if (fromAddress == null || fromAddress.isBlank()) {
+            throw new MessagingException("Mail username is not configured");
+        }
+
         MimeMessage mimeMessage = mailSender.createMimeMessage();
         MimeMessageHelper helper = new MimeMessageHelper(mimeMessage, true);
 
@@ -43,7 +52,7 @@ public class EmailOtpService {
                 </html>
                 """;
 
-        helper.setFrom("amnikshukla2501@gmail.com");
+        helper.setFrom(fromAddress);
         helper.setTo(email);
         helper.setSubject("Email verification OTP");
         helper.setText(html, true);

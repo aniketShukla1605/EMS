@@ -1,11 +1,12 @@
 package com.main.EMS_backend.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 
 @Entity
-@Table
+@Table(name = "users")
 @Getter
 @Setter
 public class User{
@@ -16,6 +17,7 @@ public class User{
     private String username;
     @Column(unique = true)
     private String email;
+    @JsonIgnore
     private String password;
 
     private String role = "USER";

@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import api from '../api/axiosConfig';
+import { resolveImageUrl } from '../utils/imageUrl';
 
 export default function AdminDashboard() {
   const navigate = useNavigate();
@@ -159,7 +160,7 @@ export default function AdminDashboard() {
             <img
               src={
                 profilePicture
-                  ? `http://localhost:8080${profilePicture}`
+                  ? resolveImageUrl(profilePicture)
                   : 'https://cdn-icons-png.flaticon.com/512/149/149071.png'
               }
               alt="profile"

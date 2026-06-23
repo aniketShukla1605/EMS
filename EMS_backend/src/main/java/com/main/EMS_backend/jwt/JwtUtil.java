@@ -14,10 +14,10 @@ import java.util.Date;
 public class JwtUtil {
 
     @Value("${jwt.secret}")
-    private final String SECRET = "my_super_secret_key_for_jwt_which_is_long_enough_12345";
+    private String secret;
 
     private SecretKey getSigningKey() {
-        return Keys.hmacShaKeyFor(SECRET.getBytes());
+        return Keys.hmacShaKeyFor(secret.getBytes());
     }
 
     public String generateToken(String email) {

@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import api from '../api/axiosConfig';
+import api, { apiOrigin } from '../api/axiosConfig';
+import { resolveImageUrl } from '../utils/imageUrl';
 
 export default function StudentDashboard() {
   const [activePopup, setActivePopup] = useState(null);
@@ -138,7 +139,7 @@ export default function StudentDashboard() {
             <img
               src={
                 profilePicture
-                  ? `http://localhost:8080${profilePicture}`
+                  ? resolveImageUrl(profilePicture)
                   : 'https://cdn-icons-png.flaticon.com/512/149/149071.png'
               }
               alt="profile"
@@ -214,7 +215,7 @@ export default function StudentDashboard() {
                 className="bg-white/10 backdrop-blur-md pb-4 rounded-xl overflow-hidden shadow-lg hover:-translate-y-1 transition duration-300"
               >
                 <img
-                  src={`http://localhost:8080${event.bannerPath}`}
+                  src={`${apiOrigin}${event.bannerPath}`}
                   alt={event.title}
                   className="w-full h-42.5 object-cover"
                 />

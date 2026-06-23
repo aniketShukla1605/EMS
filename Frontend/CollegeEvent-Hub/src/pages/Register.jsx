@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import api from '../api/axiosConfig';
+import api, { apiOrigin } from '../api/axiosConfig';
 
 export default function Register() {
   const navigate = useNavigate();
@@ -25,7 +25,7 @@ export default function Register() {
 
   const sendOtp = async () => {
     try {
-      const response = await fetch(`http://localhost:8080/otp/send`, {
+      const response = await fetch(`${apiOrigin}/otp/send`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ email: formData.email })
@@ -44,7 +44,7 @@ export default function Register() {
 
   const verifyOtp = async () => {
     try {
-      const response = await fetch(`http://localhost:8080/otp/verify?email=${formData.email}`, {
+      const response = await fetch(`${apiOrigin}/otp/verify?email=${formData.email}`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ email: formData.email, otp: otp })

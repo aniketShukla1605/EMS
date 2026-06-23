@@ -56,18 +56,18 @@ public class EventService {
         if(category!=null && !category.isEmpty()
                 && search!=null && !search.isEmpty()){
             return eventRepository
-                    .findByDateAfterAndCategoryAndEventNameContainingIgnoreCase(today, category, search);
+                    .findByDateGreaterThanEqualAndCategoryAndEventNameContainingIgnoreCase(today, category, search);
         } else if (Objects.equals(category, "Previous")) {
             return eventRepository.findByDateBefore(today);
         } else if(category!=null && !category.isEmpty()){
-            return eventRepository.findByDateAfterAndCategory(today, category);
+            return eventRepository.findByDateGreaterThanEqualAndCategory(today, category);
         }
         else if(search!=null && !search.isEmpty()){
             return eventRepository
-                    .findByDateAfterAndEventNameContainingIgnoreCase(today, search);
+                    .findByDateGreaterThanEqualAndEventNameContainingIgnoreCase(today, search);
         }
         else{
-            return eventRepository.findByDateAfter(today);
+            return eventRepository.findByDateGreaterThanEqual(today);
         }
     }
 

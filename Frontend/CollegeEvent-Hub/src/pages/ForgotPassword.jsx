@@ -1,5 +1,5 @@
 import { useState } from "react";
-import api from "../api/axiosConfig";
+import api, { apiOrigin } from "../api/axiosConfig";
 
 export default function ForgotPassword() {
 
@@ -13,7 +13,7 @@ export default function ForgotPassword() {
   const sendOtp = async () => {
     try {
       const response = await fetch(
-        `http://localhost:8080/otp/send`,
+        `${apiOrigin}/otp/send`,
         {
           method: "POST",
           headers: {
@@ -35,7 +35,7 @@ export default function ForgotPassword() {
   const verifyOtp = async () => {
     try {
       const response = await fetch(
-        `http://localhost:8080/otp/verify`,
+        `${apiOrigin}/otp/verify`,
         {
           method: "POST",
           headers: {

@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import api from '../api/axiosConfig';
+import { resolveImageUrl } from '../utils/imageUrl';
 
 export default function AdminProfile() {
 
@@ -78,7 +79,7 @@ export default function AdminProfile() {
           <img
             src={
               profilePicture
-                ? `http://localhost:8080${profilePicture}`
+                ? resolveImageUrl(profilePicture)
                 : "https://cdn-icons-png.flaticon.com/512/3135/3135715.png"
             }
             className="w-11.25 h-11.25 rounded-full object-cover"
@@ -95,7 +96,7 @@ export default function AdminProfile() {
             <img
               src={
                 profilePicture
-                  ? `http://localhost:8080${profilePicture}`
+                  ? resolveImageUrl(profilePicture)
                   : "https://cdn-icons-png.flaticon.com/512/3135/3135715.png"
               }
               className="w-30 h-30 rounded-full object-cover"

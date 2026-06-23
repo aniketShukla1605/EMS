@@ -10,10 +10,10 @@ import java.util.List;
 
 @Repository
 public interface EventRepository extends JpaRepository<Event, Long> {
-    List<Event> findByDateAfter(LocalDate date);
-    List<Event> findByDateAfterAndCategory(LocalDate date, String category);
-    List<Event> findByDateAfterAndEventNameContainingIgnoreCase(LocalDate date, String name);
-    List<Event> findByDateAfterAndCategoryAndEventNameContainingIgnoreCase(LocalDate date, String category, String name);
+    List<Event> findByDateGreaterThanEqual(LocalDate date);
+    List<Event> findByDateGreaterThanEqualAndCategory(LocalDate date, String category);
+    List<Event> findByDateGreaterThanEqualAndEventNameContainingIgnoreCase(LocalDate date, String name);
+    List<Event> findByDateGreaterThanEqualAndCategoryAndEventNameContainingIgnoreCase(LocalDate date, String category, String name);
     List<Event> findByDateBefore(LocalDate date);
     List<Event> findByCreatedBy(User user);
 //    List<Event> findByCreatedByAndEventName(User user, String name);
